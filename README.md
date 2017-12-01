@@ -1,4 +1,15 @@
 "# SpringHibernateDemo" 
+
+step 1: check post in "application.properties" file and change if required
+
+step 2:
+  run command : mvn clean install
+
+step 3:
+  after successful compile, go to "target" folder and run "java -jar JAR_FILE_NAME""
+
+
+
 -----------------------------------------------------------------------
 To get all customer
 URL : localhost:8080/customer/getall
