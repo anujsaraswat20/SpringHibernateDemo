@@ -2,7 +2,7 @@
 
 step 1: check post in "application.properties" file and change if required
 
-step 2:
+step 2: 
   run command : mvn clean install
 
 step 3:
