@@ -5,7 +5,7 @@ step 1: check post in "application.properties" file and change if required
 step 2: fg
   run command : mvn clean install
 
-step 3:
+step 3: 
   after successful compile, go to "target" folder and run "java -jar JAR_FILE_NAME""
 
 
