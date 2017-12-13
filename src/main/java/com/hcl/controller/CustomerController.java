@@ -64,7 +64,7 @@ public class CustomerController {
 
     }
 
-    @RequestMapping(value = "/customer/getall", method = RequestMethod.GET)
+    @RequestMapping(value = "/customer/getall2", method = RequestMethod.GET)
     public List<Customer> getAllCustomers() {
         List<Customer> customers = customerService.getAllCustomers();
         return customers;
