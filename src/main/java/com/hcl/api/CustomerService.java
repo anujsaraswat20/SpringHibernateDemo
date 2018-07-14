@@ -1,6 +1,7 @@
 package com.hcl.api;
 
 import com.hcl.exception.CustomException;
+import com.hcl.exception.CustomerNotFoundException;
 import com.hcl.model.Customer;
 import java.util.List;
 
@@ -48,7 +49,7 @@ public interface CustomerService {
      * @param id Unique identifier to get customer instance from database
      * @return Customer associated with specified ID
      */
-    public Customer getCustomer(Integer customerId);
+    public Customer getCustomer(Integer customerId) throws CustomerNotFoundException;
 
     /**
      * Deletes customer my identifying with specified Id
