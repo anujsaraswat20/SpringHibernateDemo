@@ -1,1 +1,44 @@
-
+{
+  "provider" : {
+    "name" : "Customer-Service"
+  },
+  "consumer" : {
+    "name" : "Readers-Service"
+  },
+  "interactions" : [ {
+    "provider_state": "customer-exists",
+    "description" : "Get customer",
+    "request" : {
+      "method" : "GET",
+      "path" : "/customer/1"
+    },
+    "response" : {
+      "status" : 200,
+      "body": {
+          "id": 1, 
+		  "version": 0, 
+		  "name": "test1", 
+		  "age": "10", 
+		  "designation": "manager" 
+      }
+    }
+  } , {
+    "provider_state": "customer-not-found",
+    "description" : "Get non-existent customer",
+    "request" : {
+      "method" : "GET",
+      "path" : "/customer/1"
+    },
+    "response" : {
+      "status" : 404
+    }
+  }],
+  "metadata" : {
+    "pact-specification" : {
+      "version" : "2.0.0"
+    },
+    "pact-jvm" : {
+      "version" : "3.1.1"
+    }
+  }
+}
