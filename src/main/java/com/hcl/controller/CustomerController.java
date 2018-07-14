@@ -2,6 +2,7 @@ package com.hcl.controller;
 
 import com.hcl.api.CustomerService;
 import com.hcl.exception.CustomException;
+import com.hcl.exception.CustomerNotFoundException;
 import com.hcl.model.Customer;
 import java.net.URI;
 import java.util.List;
@@ -83,7 +84,7 @@ public class CustomerController {
     }
 
     @RequestMapping(value = "/customer/{id}", method = RequestMethod.GET)
-    public Customer getCustomer(@PathVariable Integer id) {
+    public Customer getCustomer(@PathVariable Integer id) throws CustomerNotFoundException {
         Customer customer = customerService.getCustomer(id);
         return customer;
     }
