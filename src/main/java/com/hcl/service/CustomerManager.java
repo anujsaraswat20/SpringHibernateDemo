@@ -1,17 +1,34 @@
 package com.hcl.service;
 
-import com.hcl.api.CustomerService;
-import com.hcl.exception.CustomException;
-import com.hcl.model.Customer;
-import com.hcl.repository.CustomerRepository;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import com.hcl.api.CustomerService;
+import com.hcl.exception.CustomException;
+import com.hcl.model.Customer;
+import com.hcl.repository.CustomerRepository;
 
 /*
  * Class responsible to provide all implementation of customer service
@@ -114,4 +131,106 @@ public class CustomerManager implements CustomerService {
             throw new CustomException(ex.getErrorCode(), ex.getMessage());
         }
     }
+
+	@Override
+	public void exportAllCustomersList() throws CustomException {
+
+		List<Customer> customers = getAllCustomers();
+		HSSFWorkbook workBook = new HSSFWorkbook();
+        HSSFSheet sheet = workBook.createSheet();
+        HSSFRow headingRow = sheet.createRow(0);
+        headingRow.createCell((short)0).setCellValue("ID");
+        headingRow.createCell((short)1).setCellValue("AGE");
+        headingRow.createCell((short)3).setCellValue("DESIGNATION");
+        headingRow.createCell((short)2).setCellValue("NAME");
+        short rowNo = 1;
+        
+        for (Customer customer : customers) {
+            HSSFRow row = sheet.createRow(rowNo);
+            row.createCell((short)0).setCellValue(customer.getId());
+            row.createCell((short)1).setCellValue(customer.getAge());
+            row.createCell((short)2).setCellValue(customer.getDesignation());
+            row.createCell((short)3).setCellValue(customer.getName());
+            rowNo++;
+        }
+        
+        String file = "D:/Customer_details"+LocalDate.now()+".xls";
+        try{
+            FileOutputStream fos = new FileOutputStream(file);
+            workBook.write(fos);
+            fos.flush();
+        }catch(FileNotFoundException e){
+            e.printStackTrace();
+            System.out.println("Invalid directory or file not found");
+        }catch(IOException e){
+            e.printStackTrace();
+            System.out.println("Error occurred while writting excel file to directory");
+        }
+	}
+
+	@Override
+	public void importCustomerList() throws CustomException {
+		String filePath = "D:/Customer_import.xls";
+		List<Customer> customerList = new ArrayList<>();
+		
+		FileInputStream fis = null;
+        try {
+            fis = new FileInputStream(filePath);
+            Workbook workbook = new HSSFWorkbook(fis);
+            
+            int numberOfSheets = workbook.getNumberOfSheets();
+ 
+            //looping over each workbook sheet
+            for (int i = 0; i < numberOfSheets; i++) {
+                Sheet sheet = workbook.getSheetAt(i);
+                Iterator<Row> rowIterator = sheet.iterator();
+ 
+                //iterating over each row
+                while (rowIterator.hasNext()) {
+ 
+                    Customer customer = new Customer();
+                    Row row = rowIterator.next();
+                    Iterator<Cell> cellIterator = row.cellIterator();
+ 
+                    //Iterating over each cell (column wise)  in a particular row.
+                    while (cellIterator.hasNext()) {
+ 
+                        Cell cell = cellIterator.next();
+                        
+                        if (cell.getColumnIndex() == 1) {
+                        	if(StringUtils.isEmpty( String.valueOf(cell.getNumericCellValue()))) {
+                        		String statusMessage = "Empty cell found at cell number : "+cell.getColumnIndex();
+                            	throw new CustomException(HttpStatus.BAD_REQUEST.value(), statusMessage);
+                            } else {
+                            	customer.setAge(String.valueOf(cell.getNumericCellValue()));	
+                            }
+                        }
+                        else if (cell.getColumnIndex() == 2) {
+                        	if(StringUtils.isEmpty( cell.getStringCellValue())) {
+                        		String statusMessage = "Empty cell found at cell number : "+cell.getColumnIndex();
+                            	throw new CustomException(HttpStatus.BAD_REQUEST.value(), statusMessage);
+                            } else {
+                            	customer.setName(cell.getStringCellValue());	
+                            }
+                        }
+                        else if (cell.getColumnIndex() == 3) {
+                        	if(StringUtils.isEmpty( cell.getStringCellValue())) {
+                        		String statusMessage = "Empty cell found at cell number : "+cell.getColumnIndex();
+                            	throw new CustomException(HttpStatus.BAD_REQUEST.value(), statusMessage);
+                            } else {
+                            	customer.setDesignation(cell.getStringCellValue());	
+                            }
+                        }
+                    }
+                    createCustomer(customer);
+                }
+            }
+ 
+            fis.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+	}
 }

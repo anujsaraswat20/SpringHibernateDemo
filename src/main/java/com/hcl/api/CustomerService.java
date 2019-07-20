@@ -57,5 +57,9 @@ public interface CustomerService {
      * @throws CustomException exception with necessary reason
      */
     public void deleteCustomer(Integer customerId) throws CustomException;
+    
+    public void exportAllCustomersList() throws CustomException;
+    
+    public void importCustomerList() throws CustomException;
 
 }

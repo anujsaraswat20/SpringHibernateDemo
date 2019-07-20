@@ -65,7 +65,7 @@ public class CustomerController {
 
     }
 
-    @RequestMapping(value = "/customer/getall2", method = RequestMethod.GET)
+    @RequestMapping(value = "/customer/getall", method = RequestMethod.GET)
     public List<Customer> getAllCustomers() {
         List<Customer> customers = customerService.getAllCustomers();
         return customers;
@@ -94,4 +94,13 @@ public class CustomerController {
         customerService.deleteCustomer(customerid);
     }
 
+    @RequestMapping(value = "/export", method = RequestMethod.GET)
+    public void exportAllCustomerList() throws CustomException {
+        customerService.exportAllCustomersList();
+    }
+    
+    @RequestMapping(value = "/import", method = RequestMethod.GET)
+    public void importCustomerList() throws CustomException {
+        customerService.importCustomerList();
+    }
 }

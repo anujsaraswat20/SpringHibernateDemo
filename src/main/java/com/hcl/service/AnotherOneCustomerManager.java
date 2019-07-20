@@ -113,4 +113,16 @@ public class AnotherOneCustomerManager implements CustomerService {
             throw new CustomException(ex.getErrorCode(), ex.getMessage());
         }
     }
+
+	@Override
+	public void exportAllCustomersList() throws CustomException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void importCustomerList() throws CustomException {
+		// TODO Auto-generated method stub
+		
+	}
 }
