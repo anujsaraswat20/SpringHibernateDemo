@@ -9,4 +9,5 @@ import com.hcl.hackerrank.stocktrade.model.Trade;
 public interface TradeRepository extends CrudRepository<Trade, Long> {
 
 	List<Trade> findBySymbol(String symbol);
+	List<Trade> findById(Long id);
 }

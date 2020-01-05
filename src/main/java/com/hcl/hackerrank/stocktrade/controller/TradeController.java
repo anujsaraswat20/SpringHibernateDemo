@@ -2,9 +2,9 @@ package com.hcl.hackerrank.stocktrade.controller;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,8 +75,8 @@ public class TradeController {
     }
     
     @RequestMapping(value = "/trades/users/{userId}", method = RequestMethod.GET)
-    public List<Trade> getAllTradessByUserId(@PathVariable String userId) {
-        List<Trade> trades = TradeService.getAllTradesByUserId(Integer.parseInt(userId));
+    public List<Trade> getAllTradessByUserId(@PathVariable long userId) {
+        List<Trade> trades = TradeService.getAllTradesByUserId(userId);
         return trades;
     }
 
@@ -110,7 +110,7 @@ public class TradeController {
     }
         
     @RequestMapping(value = "/events/repos/{repoID}", method = RequestMethod.GET)
-    public List<Event> getAllEventsByUserId(@PathVariable String repoID) {
+    public List<Event> getAllEventsByUserId(@PathVariable long repoID) {
         List<Event> result = new ArrayList<Event>();
         
         List<Event> events = (List<Event>)eventRepository.findAll();
@@ -118,51 +118,59 @@ public class TradeController {
         System.out.println("-------------------------------");
         System.out.println(  events.size());
         
-        Iterator<Event> itr = events.iterator();
+        result = events.stream().filter(e->(e.getId() == repoID)).collect(Collectors.toList());
         
-        while(itr.hasNext()) {
-            Event event = itr.next();
-                if(event.getRepo().getId() == Long.valueOf(repoID)) {
-                    result.add(event);
-                }
-            }
+//        Iterator<Event> itr = events.iterator();
+//        
+//        while(itr.hasNext()) {
+//            Event event = itr.next();
+//                if(event.getRepo().getId() == repoID) {
+//                    result.add(event);
+//                }
+//            }
 //        Collections.sort(result);
         return result;
     }
     
     @RequestMapping(value = "/events/actors/{actorID}", method = RequestMethod.GET)
-    public List<Event> getAllEventsByActorId(@PathVariable String actorID) {
+    public List<Event> getAllEventsByActorId(@PathVariable long actorID) {
         List<Event> result = new ArrayList<Event>();
         
         List<Event> events = (List<Event>)eventRepository.findAll();
+
+        result = events.stream().filter(e->e.getActor().getId() == actorID).collect(Collectors.toList());
         
-        Iterator<Event> itr = events.iterator();
-        
-        while(itr.hasNext()) {
-            Event event = itr.next();
-                if(event.getActor().getId() == Long.valueOf(actorID)) {
-                    result.add(event);
-                }
-            }
+//        Iterator<Event> itr = events.iterator();
+//        
+//        while(itr.hasNext()) {
+//            Event event = itr.next();
+//                if(event.getActor().getId() == actorID) {
+//                    result.add(event);
+//                }
+//            }
         
         return result;
     }
     
     @RequestMapping(value = "/events/repos/{repoID}/actor/{actorID}", method = RequestMethod.GET)
-    public List<Event> getAllEventsByRepoIdAndActorId(@PathVariable String repoID, @PathVariable String actorID) {
+    public List<Event> getAllEventsByRepoIdAndActorId(@PathVariable long repoID, @PathVariable long actorID) {
     	List<Event> result = new ArrayList<Event>();
     	
     	 List<Event> events = (List<Event>)eventRepository.findAll();
-    	 Iterator<Event> itr = events.iterator();
     	 
-    	 while(itr.hasNext()) {
-             Event event = itr.next();
-             if(event.getActor().getId() == Long.valueOf(actorID) 
-            		 &&
-            		 event.getRepo().getId() == Long.valueOf(repoID)) {
-                 result.add(event);
-             }
-    	 }
+    	 result = events.stream().filter(e->
+    	 e.getActor().getId() == actorID && e.getRepo().getId() == repoID).collect(Collectors.toList());
+    	 
+//    	 Iterator<Event> itr = events.iterator();
+//    	 
+//    	 while(itr.hasNext()) {
+//             Event event = itr.next();
+//             if(event.getActor().getId() == actorID 
+//            		 &&
+//            		 event.getRepo().getId().intValue() == repoID) {
+//                 result.add(event);
+//             }
+//    	 }
     	 
     	return result;
     }

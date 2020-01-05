@@ -29,7 +29,7 @@ public interface TradeService {
 	 * @param userId UserId to search for in database
 	 * @return All existing trades from database which have user id as requested
 	 */
-	public List<Trade> getAllTradesByUserId(Integer userId);
+	public List<Trade> getAllTradesByUserId(long userId);
 
 	public List<Trade> getAllTrades();
 

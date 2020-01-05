@@ -37,7 +37,7 @@ public class TradeManager implements TradeService {
         
     }
     
-    public List<Trade> getAllTradesByUserId(Integer userId) {
+    public List<Trade> getAllTradesByUserId(long userId) {
     	List<Trade> result = new ArrayList<Trade>();
     	
         List<Trade> trades = (List<Trade>) TradeRepository.findAll();
@@ -45,7 +45,7 @@ public class TradeManager implements TradeService {
         Iterator<Trade> itr = trades.iterator();
         while(itr.hasNext()) {
         	Trade trade = itr.next();
-        	if(trade.getUser().getId().intValue() == userId) {
+        	if(trade.getUser().getId() == userId) {
         		result.add(trade);	
         	}
         }
